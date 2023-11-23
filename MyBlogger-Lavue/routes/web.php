@@ -20,35 +20,31 @@ use Illuminate\Support\Facades\Route;
 //     return view('admin/dashboard');
 // }
 
-// Route::get('/admin/login', [loginController::class, 'showLoginForm'])->name('admin.login');
-// Route::post('/admin/logout', 'loginController@logout')->name('signout');
-
-Route::get('/student', [loginController::class, 'LoginForm'])->name('login');
-Route::get('/lecturer', [loginController::class, 'LecturerForm'])->name('login');
-Route::post('/student', [loginController::class, 'Login'])->name('login');
+//LECTURERS ROUTE
+Route::get('/lecturer', [loginController::class, 'LecturerForm'])->name('loginLec');
 Route::post('/lecturer', [loginController::class, 'LoginLec']);
-
 Route::get('/admin/lec/dashboard', function (){
     return view('admin.layouts.appLec');
-})->name('login');
+})->name('LecDashboard');
+Route::get('/admin/lecs', [AppController::class, 'currentUser']);
 
-
-Route::get('/admin/details', [AppController::class, 'getUser'])->name('details');
-
-// Route::post('/', [loginController::class, 'Login'])->name('login');
-
+//STUDENT ROUTE
+Route::get('/student', [loginController::class, 'LoginForm'])->name('login');
+Route::post('/student', [loginController::class, 'Login'])->name('login');
 Route::get('/admin/login', [loginController::class, 'LoginForm']);
 Route::post('/admin/login', [loginController::class, 'Login']);
 
-// Route::post('/admin/logout', [loginController::class,'logout'])->name('logout');
+
+Route::get('/admin/currentUser', [AppController::class, 'currentUser']);
+Route::get('/admin/details', [AppController::class, 'getUser'])->name('details');
 Route::post('/admin/logout', [loginController::class, 'logout'])->name('logout');
 
-Route::post('/admin/user/register', [AppController::class, 'submitUnits']);
-Route::get('/admin/currentUser', [AppController::class, 'currentUser']);
+// Route::post('/', [loginController::class, 'Login'])->name('login');
 
+Route::post('/admin/user/register', [AppController::class, 'submitUnits']);
 Route::get('/', [AppController::class, 'showLoginForm']);
 
-Route::get('/admin/lecs', [AppController::class, 'currentUser']);
+// Route::post('/admin/logout', [loginController::class,'logout'])->name('logout');
 // Route::get('[view]', ['loginController::class@checkIfloggedIn', 'AppController::class'])->where('view', '(.*)');;
 
 Route::middleware(['auth'])->group(function () {

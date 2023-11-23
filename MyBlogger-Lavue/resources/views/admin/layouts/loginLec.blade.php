@@ -26,12 +26,22 @@
         <div class="text-uppercase text-yellow">
             <h1 class="text-yellow">My Maoni App</h1>
         </div>
-        <div >
+        <div>
+            <br>
             <form action="/lecturer" method="POST">
                 @csrf
+                @if (session('message'))
+                    <strong>
+                        <div class="text-uppercase text-danger d-flex justify-contents-center">
+                            {{ session('message') }}
+                        </div>
+                    </strong>
+                @endif
+                <br>
                 <!-- Email input -->
                 <div class="form-outline">
-                    <input type="email" name="email" placeholder="EMAIL" id="form2Example1" class="form-control" required/>
+                    <input type="email" name="email" placeholder="EMAIL" id="form2Example1" class="form-control"
+                        required />
                     <label class="form-label" for="form2Example1"></label>
                 </div>
 

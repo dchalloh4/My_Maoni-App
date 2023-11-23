@@ -4,12 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Models\Lecturer;
 use App\Models\User;
+use Error;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
+
+use function Laravel\Prompts\error;
 
 class loginController extends Controller
 {
@@ -61,40 +64,27 @@ class loginController extends Controller
 
     public function LoginLec(Request $request)
     {
-        $email = 'daniel.luther@example.net';
-        // if ($request) {
-        //     $request->validate([
-        //         'email' => 'required|email',
-        //         'password' => 'required',
-        //     ]);
+        $creds = $request->validate([
+            'email' => 'required|email',
+            'password' => 'required',
+        ]);
 
-        //     $user = DB::table('Lecturers_DB2')->where('email', $request->email)->first();
+        $lec = Auth::guard('lecturer')->attempt($creds);
 
-        // return response()->json([$userLec, $request]);
-        $user =  Lecturer::where('email', $email)->first();
+        if ($lec) {
+            $lecName = Auth::guard('lecturer')->user();
 
-        Auth::login($user);
+            Session::put('key', [$lecName->name]);
+            Session::push('key', $lecName->email);
+            // Session::push('key', $lecName);
 
-        if ($user) {
-            Auth::check();
-
-            // $token = $user->createToken('api_token')->accessToken;
-            // $Token = bcrypt($token);
-            $response = response()->json(['user' => $user]);
-
-            Session::put('key', [$user->name]);
-            Session::push('key', $user->email);
-
-            session(['user' => Auth::user()]);
-
-            return redirect('/admin/lec/dashboard')->with([$response]);
+            // dd(Session::get('key'));
+            $request->session()->regenerate();
+            return redirect()->intended('/admin/lec/dashboard')->with('message', 'Login Successful');
+        } else {
+            $error = 'Wrong Email Address or Password';
+            return to_route('loginLec')->with('message', $error);
         }
-        // else {
-        //     return response()->json(['message' => 'Login Failed at Auth Check']);
-        // }
-        // } else {
-        //     return response()->json('No info reached Server') . redirect('/');
-        // }
     }
 
     public function logout()
